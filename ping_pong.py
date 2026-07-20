@@ -1,5 +1,5 @@
 from pygame import *
-
+font.init()
 back = (135, 206, 235)
 window = display.set_mode((700, 500))
 display.set_caption("Шутер")
@@ -29,6 +29,12 @@ class Player(GameSprite):
             self.rect.y += self.speed
 racker1 = Player("racket1.png", 3, 20, 300, 30, 125)
 racker2 = Player("racket2.png", 3, 665, 300, 30, 125)
+ball1 = GameSprite("ball1.jpg", 3, 350, 250, 30, 30)
+font1 = font.Font(None, 35)
+lose1 = font1.render('PLAYER 1 LOSE', True, (180, 0, 0))
+lose2 = font1.render('PLAYER 2 LOSE', True, (180, 0, 0))
+speed_x = 3
+speed_y = 3
 finish = False
 game = True
 while game:
@@ -37,9 +43,22 @@ while game:
             game = False
     if finish != True:
         window.fill(back)
+        ball1.rect.x += speed_x
+        ball1.rect.y += speed_y
+        if ball1.rect.y > 470 or ball1.rect.y < 0:
+            speed_y *= -1
+        if sprite.collide_rect(racker1, ball1) or sprite.collide_rect(racker2, ball1):
+            speed_x *= -1
+        if ball1.rect.x < 0:
+            finish = True
+            window.blit(lose1, (300, 250))
+        if ball1.rect.x > 699:
+            finish = True
+            window.blit(lose2, (300, 250))
         racker1.update_l()
         racker1.reset()
         racker2.update_r()
         racker2.reset()
+        ball1.reset()
         display.update()
         clock.tick(50)
